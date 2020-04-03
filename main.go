@@ -3,7 +3,7 @@ package main
 import "github.com/gin-gonic/gin"
 
 func main() {
-	route := gin.default()
+	route := gin.Default()
 
 	// people quest
 	route.GET("/people/all", func(c *gin.Context) {
@@ -13,13 +13,13 @@ func main() {
 
 	})
 	route.POST("/people/", func(c *gin.Context) {
-		
+
 	})
 	route.PUT("/people/", func(c *gin.Context) {
-		
+
 	})
 	route.DELETE("/people/", func(c *gin.Context) {
-		
+
 	})
 
 	// calculate quest
@@ -45,29 +45,28 @@ func main() {
 
 	// problem1 Multiples of 3 and 5
 	route.POST("/problem/One", func(c *gin.Context) {
-		
+
 	})
 
 	// problem2 Even Fibonacci numbers
 	route.GET("/problem/Two", func(c *gin.Context) {
-		
+
 	})
 
 	// problem3 Largest prime factor
 	route.GET("/problem/Three", func(c *gin.Context) {
-		
+
 	})
 
 	// problem4 Largest palindrome product
 	route.GET("/problem/Four", func(c *gin.Context) {
-		
+
 	})
 
 	// problem5 Smallest multiple
 	route.GET("/problem/Five", func(c *gin.Context) {
-		
+
 	})
 
-
-	r.Run()
+	route.Run()
 }
