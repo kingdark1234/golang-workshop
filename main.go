@@ -1,20 +1,96 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+)
+
+type person struct {
+	id        int
+	firstName string
+	surName   string
+	age       int
+}
+
+type persons []person
+
+func print(c *gin.Context) {
+	var p *person
+	c.BindJSON(&p)
+	fmt.Println(c)
+	c.JSON(http.StatusOK, gin.H{"firstName": p.firstName})
+}
+
+var result int = 0
+
+func getResult(c *gin.Context) {
+	c.JSON(http.StatusOK, result)
+}
+
+func calculate(c *gin.Context) {
+	paramNumberOne := c.PostForm("numberOne")
+	numberOne, _ := strconv.Atoi(paramNumberOne)
+	paramNumberTwo := c.PostForm("numberTwo")
+	numberTwo, _ := strconv.Atoi(paramNumberTwo)
+	oparator := c.PostForm("oparator")
+	switch oparator {
+	case "+":
+		result = numberOne + numberTwo
+	case "-":
+		result = numberOne - numberTwo
+	case "*":
+		result = numberOne * numberTwo
+	case "/":
+		result = numberOne / numberTwo
+	case "%":
+		result = numberOne % numberTwo
+	default:
+		return
+	}
+	fmt.Println(result)
+	c.JSON(http.StatusOK, result)
+}
+
+func clearResult(c *gin.Context) {
+	result = 0
+	c.JSON(http.StatusOK, "Success")
+}
+
+func isIntegral(val float32) bool {
+	return val == float32(int(val))
+}
+
+func multiples(c *gin.Context) {
+	param := c.PostForm("size")
+	size, _ := strconv.Atoi(param)
+	var arrayResult int = 0
+	for i := 1; i < size; i++ {
+		var multiWIthThree, multiWIthFive float32
+		multiWIthThree = float32(i) / 3
+		multiWIthFive = float32(i) / 5
+		if isIntegral(multiWIthThree) || isIntegral(multiWIthFive) {
+			arrayResult = arrayResult + i
+		}
+	}
+	c.JSON(http.StatusOK, arrayResult)
+}
 
 func main() {
 	route := gin.Default()
 
 	// people quest
-	route.GET("/people/all", func(c *gin.Context) {
+	route.GET("/peoples/", func(c *gin.Context) {
 
 	})
 	route.GET("/people/:id", func(c *gin.Context) {
 
 	})
-	route.POST("/people/", func(c *gin.Context) {
 
-	})
+	route.POST("/people/", print)
+
 	route.PUT("/people/", func(c *gin.Context) {
 
 	})
@@ -23,30 +99,11 @@ func main() {
 	})
 
 	// calculate quest
-	route.GET("/calculate/", func(c *gin.Context) {
-		// TODO: return current result
-	})
-	route.POST("/calculate/", func(c *gin.Context) {
-		// TODO: return result
-	})
-	route.DELETE("/calculate/", func(c *gin.Context) {
-		// TODO: clear Result
-	})
-
-	// calculate quest
-	route.GET("/calculate/", func(c *gin.Context) {
-		// TODO: return current result
-	})
-	route.POST("/calculate/", func(c *gin.Context) {
-		// TODO: return result input:{number1:1,oparation:'+',number2:2}
-		// support + - * / %
-		// response = 3
-	})
-
+	route.GET("/calculate/", getResult)
+	route.POST("/calculate/", calculate)
+	route.DELETE("/calculate/", clearResult)
 	// problem1 Multiples of 3 and 5
-	route.POST("/problem/One", func(c *gin.Context) {
-
-	})
+	route.POST("/problem/One", multiples)
 
 	// problem2 Even Fibonacci numbers
 	route.GET("/problem/Two", func(c *gin.Context) {
