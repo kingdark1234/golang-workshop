@@ -29,6 +29,9 @@ func main() {
 	route.POST("/calculate/", func(c *gin.Context) {
 		// TODO: return result
 	})
+	route.DELETE("/calculate/", func(c *gin.Context) {
+		// TODO: clear Result
+	})
 
 	// calculate quest
 	route.GET("/calculate/", func(c *gin.Context) {
