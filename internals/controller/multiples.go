@@ -7,11 +7,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ProblemController ...
+type ProblemController struct{}
+
 func isIntegral(val float32) bool {
 	return val == float32(int(val))
 }
 
-func multiples(c *gin.Context) {
+// Multiples ...
+func (*ProblemController) Multiples(c *gin.Context) {
 	param := c.PostForm("size")
 	size, _ := strconv.Atoi(param)
 	var arrayResult int
@@ -24,4 +28,9 @@ func multiples(c *gin.Context) {
 		}
 	}
 	c.JSON(http.StatusOK, arrayResult)
+}
+
+// NewProblemController ...
+func NewProblemController() *ProblemController {
+	return &ProblemController{}
 }

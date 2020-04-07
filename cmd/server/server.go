@@ -1,12 +1,16 @@
 package main
 
-import (
-	// databaseServer "golang-workshop/src/infrastructure/database"
-	httpServer "workshop-service/internals/infrastructure/http"
-)
+import "workshop-service/internals/container"
 
 func main() {
-	sv := httpServer.NewServerHTTP()
-	// databaseServer.NewDatabaseServer()
-	sv.Start()
+	sv, err := container.NewContainer()
+	if err != nil {
+		panic(err)
+	}
+	if err := sv.StartDatabase(); err != nil {
+		panic(err)
+	}
+	if err := sv.Start(); err != nil {
+		panic(err)
+	}
 }

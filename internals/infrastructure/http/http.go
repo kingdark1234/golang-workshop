@@ -1,6 +1,8 @@
 package http
 
 import (
+	"strconv"
+	"workshop-service/internals/config"
 	ctrl "workshop-service/internals/controller"
 
 	"github.com/gin-gonic/gin"
@@ -8,35 +10,51 @@ import (
 
 // ServerHTTP ...
 type ServerHTTP struct {
-	route         *gin.Engine
-	calculateCtrl *ctrl.CalculateController
+	route       *gin.Engine
+	gatewayCtrl ctrl.GatewayCtrl
+	env         config.Configuration
 }
 
 // Configure ...
 func (h *ServerHTTP) Configure() {
 	r := h.route
+
+	po := r.Group("/people")
+	{
+		// calculate quest
+		po.POST("/", h.gatewayCtrl.PeopleCtrl.AddPerson)
+	}
+
 	g := r.Group("/calculate")
 	{
 		// calculate quest
-		g.GET("/calculate/", h.calculateCtrl.GetResult)
-		g.POST("/calculate/", h.calculateCtrl.Calculate)
-		g.DELETE("/calculate/", h.calculateCtrl.ClearResult)
+		g.GET("/", h.gatewayCtrl.CalculateCtrl.GetResult)
+		g.POST("/", h.gatewayCtrl.CalculateCtrl.Calculate)
+		g.DELETE("/", h.gatewayCtrl.CalculateCtrl.ClearResult)
+	}
+
+	p := r.Group("/problem")
+	{
+		// calculate quest
+		p.POST("/one", h.gatewayCtrl.ProblemCtrl.Multiples)
 	}
 }
 
 // Start ...
 func (h *ServerHTTP) Start() {
 	h.Configure()
-	if err := h.route.Run(":3000"); err != nil {
+
+	if err := h.route.Run(":" + strconv.Itoa(h.env.Port)); err != nil {
 		panic(err)
 	}
 }
 
 // NewServerHTTP ...
-func NewServerHTTP() *ServerHTTP {
+func NewServerHTTP(gc ctrl.GatewayCtrl, env config.Configuration) *ServerHTTP {
 	return &ServerHTTP{
-		route:         gin.Default(),
-		calculateCtrl: ctrl.NewPingController(),
+		route:       gin.Default(),
+		gatewayCtrl: gc,
+		env:         env,
 	}
 }
 
