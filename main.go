@@ -1,73 +1,27 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+
+	"workshop-service/configs"
+	"workshop-service/models"
+	"workshop-service/routers"
+)
+
+var err error
 
 func main() {
-	route := gin.default()
+	configs.DB, err = gorm.Open("postgres", "host=localhost port=5432 user=robodev dbname=go-workshop password=1qazxsw2 sslmode=disable")
+	if err != nil {
+		panic(err)
+	}
+	defer configs.DB.Close()
 
-	// people quest
-	route.GET("/people/all", func(c *gin.Context) {
+	// migrate db
+	configs.DB.AutoMigrate(&models.Author{})
 
-	})
-	route.GET("/people/:id", func(c *gin.Context) {
-
-	})
-	route.POST("/people/", func(c *gin.Context) {
-		
-	})
-	route.PUT("/people/", func(c *gin.Context) {
-		
-	})
-	route.DELETE("/people/", func(c *gin.Context) {
-		
-	})
-
-	// calculate quest
-	route.GET("/calculate/", func(c *gin.Context) {
-		// TODO: return current result
-	})
-	route.POST("/calculate/", func(c *gin.Context) {
-		// TODO: return result
-	})
-	route.DELETE("/calculate/", func(c *gin.Context) {
-		// TODO: clear Result
-	})
-
-	// calculate quest
-	route.GET("/calculate/", func(c *gin.Context) {
-		// TODO: return current result
-	})
-	route.POST("/calculate/", func(c *gin.Context) {
-		// TODO: return result input:{number1:1,oparation:'+',number2:2}
-		// support + - * / %
-		// response = 3
-	})
-
-	// problem1 Multiples of 3 and 5
-	route.POST("/problem/One", func(c *gin.Context) {
-		
-	})
-
-	// problem2 Even Fibonacci numbers
-	route.GET("/problem/Two", func(c *gin.Context) {
-		
-	})
-
-	// problem3 Largest prime factor
-	route.GET("/problem/Three", func(c *gin.Context) {
-		
-	})
-
-	// problem4 Largest palindrome product
-	route.GET("/problem/Four", func(c *gin.Context) {
-		
-	})
-
-	// problem5 Smallest multiple
-	route.GET("/problem/Five", func(c *gin.Context) {
-		
-	})
-
-
-	r.Run()
+	r := routers.SetupRouter()
+	// Listen and Server in 0.0.0.0:8080
+	r.Run(":8080")
 }
