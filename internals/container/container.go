@@ -13,8 +13,7 @@ import (
 
 // Container ...
 type Container struct {
-	container  *dig.Container
-	ServerBase *database.ServerBase
+	container *dig.Container
 }
 
 // Configure ...

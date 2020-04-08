@@ -14,7 +14,7 @@ import (
 type PeopleRepository struct {
 	PeopleDB        *entity.People
 	AddPeopleEntity *entity.AddPeople
-	ServerBase      *database.ServerBase
+	sb              database.ServerBase
 	inputAddPeople  struct {
 		firstName string
 		lastName  string
@@ -32,7 +32,7 @@ func (p *PeopleRepository) Prepare() {
 	p.PeopleDB.UpdatedAt = time.Now()
 }
 
-// Validate ...
+// ValidateAddPeople ...
 func (p *PeopleRepository) ValidateAddPeople() error {
 	if p.inputAddPeople.firstName == "" {
 		return errors.New("Required Title")
@@ -49,7 +49,8 @@ func (p *PeopleRepository) ValidateAddPeople() error {
 // Add ...
 func (p *PeopleRepository) Add(added *entity.AddPeople) error {
 	var err error
-	db := *p.ServerBase.DB
+	p.sb.Initialize()
+	db := p.sb.DB
 	fmt.Println("&db IS ", db)
 	fmt.Println("&added IS ", &added)
 	err = db.Debug().Model(*p.PeopleDB).Create(&added).Error
@@ -65,6 +66,8 @@ func (p *PeopleRepository) Add(added *entity.AddPeople) error {
 // }
 
 // NewPeopleRepository ...
-func NewPeopleRepository() *PeopleRepository {
-	return &PeopleRepository{}
+func NewPeopleRepository(sb database.ServerBase) *PeopleRepository {
+	return &PeopleRepository{
+		sb: sb,
+	}
 }
