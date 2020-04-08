@@ -1,7 +1,12 @@
 .PHONY: build
 build:
-	go build -o bin/server cmd/**/*.go
+	go build -o bin/server cmd/server/*.go
+	go build -o bin/migration cmd/migration/*.go
 
 .PHONY: start
 start:
-	go run main.go
+	go run cmd/server/server.go
+
+.PHONY: test
+test:
+	go test -v ./... -cover

@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,7 +11,6 @@ type ResponseData struct {
 }
 
 func RespondJSON(c *gin.Context, status int, payload interface{}) {
-	fmt.Println("status ", status)
 	var res ResponseData
 
 	res.Status = status
