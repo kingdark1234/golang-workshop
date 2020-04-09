@@ -7,11 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// AuthorController .
 type AuthorController struct {
 	Authors       []*entity.Author
 	AuthorService *service.AuthorService
 }
 
+// GetAuthor .
 func (au *AuthorController) GetAuthor(c *gin.Context) {
 	authors, err := au.AuthorService.ListAuthors()
 	if err != nil {
@@ -20,6 +22,7 @@ func (au *AuthorController) GetAuthor(c *gin.Context) {
 	c.JSON(200, authors)
 }
 
+// NewAuthorController .
 func NewAuthorController() *AuthorController {
 	return &AuthorController{
 		Authors:       []*entity.Author{},

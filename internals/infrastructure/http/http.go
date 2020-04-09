@@ -1,6 +1,7 @@
 package http
 
 import (
+	"strconv"
 	"workshop-service/internals/config"
 	ctrl "workshop-service/internals/controller"
 
@@ -19,9 +20,11 @@ func (h *Server) Configure() {
 	r := h.route
 	r.GET("/ping", h.gatewayCtrl.PingCtrl.GetPing)
 
-	g := r.Group("/author")
+	g := r.Group("/product")
 	{
-		g.GET("/getAll", h.gatewayCtrl.AuthorCtrl.GetAuthor)
+		g.GET("/getAll", h.gatewayCtrl.ProductCtrl.GetProducts)
+		g.POST("/add", h.gatewayCtrl.ProductCtrl.AddProduct)
+		g.PUT("/update/:id", h.gatewayCtrl.ProductCtrl.UpdateProduct)
 	}
 }
 
@@ -29,7 +32,7 @@ func (h *Server) Configure() {
 func (h *Server) Start() {
 	h.Configure()
 
-	if err := h.route.Run(":3000"); err != nil {
+	if err := h.route.Run(":" + strconv.Itoa(h.env.Port)); err != nil {
 		panic(err)
 	}
 }
@@ -37,8 +40,8 @@ func (h *Server) Start() {
 // NewHTTPServer ...
 func NewHTTPServer(g ctrl.GatewayCtrl, env config.Configuration) *Server {
 	return &Server{
-		route: gin.Default(),
-		// gatewayCtrl: g,
-		// env:         env,
+		route:       gin.Default(),
+		gatewayCtrl: g,
+		env:         env,
 	}
 }

@@ -17,13 +17,13 @@ func (c *Container) Configure() error {
 	if err := c.container.Provide(controller.NewPingController); err != nil {
 		return err
 	}
+	if err := c.container.Provide(controller.NewProductController); err != nil {
+		return err
+	}
 	if err := c.container.Provide(http.NewHTTPServer); err != nil {
 		return err
 	}
 	if err := c.container.Provide(config.NewConfiguration); err != nil {
-		return err
-	}
-	if err := c.container.Provide(controller.NewAuthorController); err != nil {
 		return err
 	}
 	return nil
